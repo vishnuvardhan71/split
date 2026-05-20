@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --color-surface: #0f1419;
+  --color-surface-raised: #1a2332;
+  --color-surface-muted: #243044;
+  --color-border: #2d3a4f;
+  --color-accent: #14b8a6;
+  --color-accent-hover: #0d9488;
+  --color-positive: #34d399;
+  --color-negative: #f87171;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+}
+
+@layer base {
+  body {
+    @apply m-0 min-h-screen bg-surface font-sans text-text antialiased;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    @apply font-sans;
+  }
+}
