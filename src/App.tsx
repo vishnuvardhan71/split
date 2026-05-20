@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { BalancesPanel } from './components/BalancesPanel'
 import { ExpenseForm } from './components/ExpenseForm'
 import { ExpenseList } from './components/ExpenseList'
@@ -10,6 +10,11 @@ import {
   computeSettlements,
   generateId,
 } from './utils/calculations'
+import {
+  clearStoredData,
+  loadStoredData,
+  saveStoredData,
+} from './utils/storage'
 
 const DEMO_MEMBERS: Member[] = [
   { id: 'demo-a', name: 'A' },
@@ -50,10 +55,18 @@ function buildDemoExpenses(): Expense[] {
 }
 
 export default function App() {
-  const [members, setMembers] = useState<Member[]>([])
-  const [expenses, setExpenses] = useState<Expense[]>([])
+  const [members, setMembers] = useState<Member[]>(() => {
+    return loadStoredData().members
+  })
+  const [expenses, setExpenses] = useState<Expense[]>(() => {
+    return loadStoredData().expenses
+  })
   const [newMemberName, setNewMemberName] = useState('')
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
+
+  useEffect(() => {
+    saveStoredData({ members, expenses })
+  }, [members, expenses])
 
   const balances = useMemo(
     () => computeBalances(members, expenses),
@@ -106,6 +119,7 @@ export default function App() {
     setExpenses([])
     setEditingExpense(null)
     setNewMemberName('')
+    clearStoredData()
   }
 
   return (
@@ -117,7 +131,8 @@ export default function App() {
               Split Expense Tracker
             </h1>
             <p className="text-sm text-text-muted">
-              Split bills fairly and settle up with minimum payments
+              Split bills fairly and settle up — saved automatically in this
+              browser
             </p>
           </div>
           <div className="flex gap-2">
