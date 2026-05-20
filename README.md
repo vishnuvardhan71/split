@@ -2,6 +2,8 @@
 
 A single-page React app to split group expenses, track net balances, and compute minimum settlement payments.
 
+**Repository:** https://github.com/vishnuvardhan71/split-expense-tracker
+
 ## Features
 
 - Add/remove group members
