@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // GitHub Pages: https://<user>.github.io/<repo>/
-  base: '/split/',
+  // Uncomment the line below ONLY if deploying to GitHub Pages
+  // base: '/split/',
   plugins: [react(), tailwindcss()],
 })
