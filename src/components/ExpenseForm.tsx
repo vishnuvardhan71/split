@@ -5,6 +5,7 @@ import { customSplitsSum, generateId } from '../utils/calculations'
 export type ExpenseFormValues = {
   description: string
   amount: string
+  date: string
   paidById: string
   splitMode: SplitMode
   participantIds: string[]
@@ -23,9 +24,13 @@ function emptyForm(members: Member[]): ExpenseFormValues {
   const customSplits: Record<string, string> = {}
   for (const id of ids) customSplits[id] = ''
 
+  const now = new Date()
+  const date = now.toISOString().split('T')[0]
+
   return {
     description: '',
     amount: '',
+    date,
     paidById: ids[0] ?? '',
     splitMode: 'equal',
     participantIds: [...ids],
@@ -44,6 +49,7 @@ function expenseToForm(expense: Expense, members: Member[]): ExpenseFormValues {
   return {
     description: expense.description,
     amount: String(expense.amount),
+    date: expense.date,
     paidById: expense.paidById,
     splitMode: expense.splitMode,
     participantIds: [...expense.participantIds],
@@ -120,6 +126,8 @@ export function ExpenseForm({ members, editing, onSave, onCancelEdit }: Props) {
         id: editing?.id ?? generateId(),
         description: form.description.trim(),
         amount: amountNum,
+        date: form.date,
+        time: editing?.time ?? new Date().toTimeString().slice(0, 5),
         paidById: form.paidById,
         splitMode: 'equal',
         participantIds: form.participantIds,
@@ -159,6 +167,8 @@ export function ExpenseForm({ members, editing, onSave, onCancelEdit }: Props) {
       id: editing?.id ?? generateId(),
       description: form.description.trim(),
       amount: amountNum,
+      date: form.date,
+      time: editing?.time ?? new Date().toTimeString().slice(0, 5),
       paidById: form.paidById,
       splitMode: 'custom',
       participantIds: Object.keys(customSplits),
@@ -231,10 +241,30 @@ export function ExpenseForm({ members, editing, onSave, onCancelEdit }: Props) {
             onChange={(e) =>
               setForm((f) => ({ ...f, amount: e.target.value }))
             }
+            onKeyDown={(e) => {
+              if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+                e.preventDefault()
+              }
+            }}
             placeholder="0"
             className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </label>
+
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-text-muted">
+            Date
+          </span>
+          <input
+            type="date"
+            max={new Date().toISOString().split('T')[0]}
+            value={form.date}
+            onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          />
+        </label>
+
+
 
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-text-muted">

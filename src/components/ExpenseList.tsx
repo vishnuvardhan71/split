@@ -43,7 +43,10 @@ export function ExpenseList({ members, expenses, onEdit, onDelete }: Props) {
                     <h3 className="truncate font-semibold text-text">
                       {exp.description}
                     </h3>
-                    <p className="mt-0.5 text-lg font-bold text-accent">
+                    <div className="mt-0.5 text-xs text-text-muted">
+                      {exp.date} at {exp.time}
+                    </div>
+                    <p className="mt-1 text-lg font-bold text-accent">
                       {formatCurrency(exp.amount)}
                     </p>
                   </div>

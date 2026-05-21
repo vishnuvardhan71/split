@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { BalancesPanel } from './components/BalancesPanel'
 import { ExpenseForm } from './components/ExpenseForm'
 import { ExpenseList } from './components/ExpenseList'
+import { ChartPanel } from './components/ChartPanel'
 import { MembersPanel } from './components/MembersPanel'
 import { SettlementPanel } from './components/SettlementPanel'
 import type { Expense, Member } from './types'
@@ -63,6 +64,7 @@ export default function App() {
   })
   const [newMemberName, setNewMemberName] = useState('')
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
+  const [isChartVisible, setIsChartVisible] = useState(false)
 
   useEffect(() => {
     saveStoredData({ members, expenses })
@@ -115,6 +117,9 @@ export default function App() {
   }
 
   const clearAll = () => {
+    if (!window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+      return
+    }
     setMembers([])
     setExpenses([])
     setEditingExpense(null)
@@ -136,6 +141,13 @@ export default function App() {
             </p>
           </div>
           <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setIsChartVisible(true)}
+              className="rounded-lg bg-accent/10 px-3 py-2 text-sm font-medium text-accent transition hover:bg-accent/20"
+            >
+              Activity Overview
+            </button>
             <button
               type="button"
               onClick={loadDemo}
@@ -172,6 +184,14 @@ export default function App() {
             onSave={saveExpense}
             onCancelEdit={() => setEditingExpense(null)}
           />
+
+          {isChartVisible && (
+            <ChartPanel 
+              balances={balances} 
+              members={members} 
+              onClose={() => setIsChartVisible(false)} 
+            />
+          )}
 
           <div className="grid gap-6 lg:grid-cols-2">
             <ExpenseList
